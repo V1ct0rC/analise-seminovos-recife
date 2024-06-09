@@ -1,5 +1,5 @@
 import scrapy
-import re
+from utils import extract_number, extract_engine_size
 
 class CarSpider(scrapy.Spider):
     name = "car_spider"
@@ -91,49 +91,6 @@ class CarSpider(scrapy.Spider):
         # TODO: There should be a better way to do this
     ]
     
-    
-    def extract_number(self, price_text):
-        """
-        Extracts and converts a price string to a float.
-        
-        Args:
-        price_text (str): The price string to be processed, e.g., "Preço R$ 73.480,00".
-        
-        Returns:
-        float: The price as a float, e.g., 73480.00.
-        """
-        # Remove all non-numeric characters except for ',' and '.'
-        cleaned_price = re.sub(r'[^\d,]', '', price_text)
-        
-        # Replace the comma with a period to convert to a float
-        cleaned_price = cleaned_price.replace('.', '').replace(',', '.')
-        
-        # Convert the cleaned string to a float
-        price_float = float(cleaned_price)
-        
-        return price_float
-    
-    
-    def extract_engine_size(self, car_description):
-        """
-        Extracts the engine size from a car description string.
-        
-        Args:
-        car_description (str): The car description string, e.g., "TRACKER LT 1.4 Turbo 16V Flex 4x".
-        
-        Returns:
-        str: The engine size, e.g., "1.4". Returns None if no match is found.
-        """
-        # Define the regular expression pattern to match engine sizes like "1.0", "1.4", etc.
-        pattern = r'\b\d\.\d\b'
-        
-        # Search for the pattern in the car description
-        match = re.search(pattern, car_description)
-        
-        # If a match is found, return the matched string; otherwise, return None
-        return match.group() if match else None
-    
-    
     def parse(self, response):
         print("procesing:"+response.url)
         
@@ -143,10 +100,10 @@ class CarSpider(scrapy.Spider):
             car_year = [year_name.split(' ')[0] for year_name in car_year_name]
             car_name = [year_name[5:] for year_name in car_year_name]
             
-            car_price = [self.extract_number(price) for price in response.css(".sub-price::text").extract()]
+            car_price = [extract_number(price) for price in response.css(".sub-price::text").extract()]
             
             car_desc_km = response.css(".inventory-subtitle::text").extract()
-            car_km = [self.extract_number(desc_km.split('|')[1]) for desc_km in car_desc_km]
+            car_km = [extract_number(desc_km.split('|')[1]) for desc_km in car_desc_km]
             car_desc = [desc_km.split('|')[0] for desc_km in car_desc_km]
             
             car_specs = response.css(".inv-specs-value::text").extract()
@@ -186,7 +143,7 @@ class CarSpider(scrapy.Spider):
         
         # AUTONUNES
         if 'autonunes' in response.url:
-            car_price = [self.extract_number(price) for price in response.css(".valor::text").re(r'\s*(\S.*\S)\s*')]
+            car_price = [extract_number(price) for price in response.css(".valor::text").re(r'\s*(\S.*\S)\s*')]
             
             car_name = response.css("span.nome-do-carro strong::text").extract()
             
@@ -203,7 +160,7 @@ class CarSpider(scrapy.Spider):
             
             for year, km, fuel in zip(car_specs[0::3], car_specs[1::3], car_specs[2::3]):
                 car_year.append(year[5:])
-                car_km.append(self.extract_number(km))
+                car_km.append(extract_number(km))
                 car_fuel.append(fuel)
                 
             row_data = zip(car_name, car_price, car_desc, car_year, car_km, car_fuel, car_engine, car_gearbox)
@@ -227,7 +184,7 @@ class CarSpider(scrapy.Spider):
         
         # ITALIANA
         if 'italiana' in response.url:
-            car_price = [self.extract_number(price) for price in response.css(".text-primary.font-weight-bold::text").extract()]
+            car_price = [extract_number(price) for price in response.css(".text-primary.font-weight-bold::text").extract()]
             
             car_brand = response.css(".text-muted.text-uppercase.font-size-12::text").extract()
             
@@ -243,7 +200,7 @@ class CarSpider(scrapy.Spider):
             car_km = []
             for km, year in zip(car_specs[0::2], car_specs[1::2]):
                 car_year.append(year[5:])
-                car_km.append(self.extract_number(km))
+                car_km.append(extract_number(km))
                 
             row_data = zip(car_name, car_price, car_desc, car_year, car_km, car_engine, car_gearbox)
             
@@ -266,17 +223,17 @@ class CarSpider(scrapy.Spider):
                 
         #AZZURRA
         if 'azzurra' in response.url:
-            car_price = [self.extract_number(price) for price in response.css('span.valor::text').extract()]
+            car_price = [extract_number(price) for price in response.css('span.valor::text').extract()]
             
             car_brand_name_desc_engine = response.css('.pos-relative.title::text').re(r'\s*(\S.*\S)\s*')
             car_name = [' '.join(brand_name_desc_engine.split(' ')[0:2]) for brand_name_desc_engine in car_brand_name_desc_engine]
             car_desc = [' '.join(brand_name_desc_engine.split(' ')[2:]) for brand_name_desc_engine in car_brand_name_desc_engine]
-            car_engine = [self.extract_engine_size(brand_name_desc_engine) for brand_name_desc_engine in car_brand_name_desc_engine]
+            car_engine = [extract_engine_size(brand_name_desc_engine) for brand_name_desc_engine in car_brand_name_desc_engine]
             
             car_specs = response.css(".specs::text").re(r'\s*(\S.*\S)\s*')
             
             car_year = response.css('p.m-0.date::text').extract()
-            car_km = [self.extract_number(km) for km in response.css('p.m-0.km::text').extract()]
+            car_km = [extract_number(km) for km in response.css('p.m-0.km::text').extract()]
             car_fuel_gearbox_color = response.css('.col-xs-4.col-xl-4.px-0 p.m-0.cambio.font-10::text').extract()
             
             car_fuel = []
@@ -311,14 +268,14 @@ class CarSpider(scrapy.Spider):
                 
         # DISNOVE
         if 'disnove' in response.url:
-            car_price = [self.extract_number(price) for price in response.css(".color-blue-light.font-weight-bold.font-24.text-center.mb-2::text").extract()]
+            car_price = [extract_number(price) for price in response.css(".color-blue-light.font-weight-bold.font-24.text-center.mb-2::text").extract()]
             
             car_brand = response.css('.font-12.color-dark.text-uppercase.p-0.m-0::text').extract()
             
             car_name_engine_desc_gearbox = response.css('.font-18.color-navy.text-uppercase.p-0.m-0::text').extract()
             car_name = [f'{brand} {name_desc.split(" ")[0]}' for brand, name_desc in zip(car_brand, car_name_engine_desc_gearbox)]
             car_desc = [' '.join(name_desc.split(" ")[1:]) for name_desc in car_name_engine_desc_gearbox]
-            car_engine = [self.extract_engine_size(name_desc) for name_desc in car_name_engine_desc_gearbox]
+            car_engine = [extract_engine_size(name_desc) for name_desc in car_name_engine_desc_gearbox]
             car_gearbox = ['Manual' if 'MANUAL' in name_desc else 'Automatico' for name_desc in car_name_engine_desc_gearbox]
             
             car_year_fuel_km_color = response.css(".font-14.color-dark.p-0.m-0.pt-2::text").extract()
@@ -331,7 +288,7 @@ class CarSpider(scrapy.Spider):
             for year, fuel, km, color in zip(car_year_fuel_km_color[0::4], car_year_fuel_km_color[1::4], car_year_fuel_km_color[2::4], car_year_fuel_km_color[3::4]):
                 car_year.append(year)
                 car_fuel.append(fuel)
-                car_km.append(self.extract_number(km))
+                car_km.append(extract_number(km))
                 car_color.append(color)
                 
             row_data = zip(car_name, car_price, car_year, car_km, car_fuel, car_color, car_desc, car_engine, car_gearbox)
@@ -355,14 +312,14 @@ class CarSpider(scrapy.Spider):
         
         # USADOSBR
         if 'usadosbr' in response.url:
-            car_price = [self.extract_number(price) for price in response.css(".css-1e6famu::text").extract() ]
+            car_price = [extract_number(price) for price in response.css(".css-1e6famu::text").extract() ]
             
             car_brand = response.css(".css-8i3pvs::text").extract()
             
             car_name = [f'{brand} {name}' for brand, name in zip(car_brand, response.css(".css-jnq6z6::text").extract())]
             
             car_desc_engine_gearbox = response.css(".css-kufh1x::text").extract()
-            car_engine = [self.extract_engine_size(desc_engine_gearbox) for desc_engine_gearbox in car_desc_engine_gearbox]
+            car_engine = [extract_engine_size(desc_engine_gearbox) for desc_engine_gearbox in car_desc_engine_gearbox]
             car_gearbox = ['Manual' if 'Manual' in desc_engine_gearbox else 'Automatico' for desc_engine_gearbox in car_desc_engine_gearbox]
             car_desc = car_desc_engine_gearbox
             
@@ -372,7 +329,7 @@ class CarSpider(scrapy.Spider):
             car_fuel = []
             for year, km, fuel in zip(car_year_km_fuel[0::3], car_year_km_fuel[1::3], car_year_km_fuel[2::3]):
                 car_year.append(year[5:])
-                car_km.append(self.extract_number(km))
+                car_km.append(extract_number(km))
                 fuel = "Flex" if "Á/G" in fuel else fuel
                 car_fuel.append(fuel)
             
