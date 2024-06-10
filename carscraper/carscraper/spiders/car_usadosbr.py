@@ -72,7 +72,8 @@ class CarUsadosBRSpider(scrapy.Spider):
         for row in row_data:
             scraped_info = {
                 "page": response.url,
-                "car_name": row[0],
+                "car_brand": row[0].partition(" ")[0].title(),
+                "car_name": row[0].partition(" ")[2].title(),
                 "car_price": row[1],
                 "car_km": row[3],
                 "car_year": row[2],
