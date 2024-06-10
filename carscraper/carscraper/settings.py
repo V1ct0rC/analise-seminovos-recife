@@ -90,8 +90,16 @@ ROBOTSTXT_OBEY = True
 # Set settings whose default value is deprecated to a future-proof value
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
-FEED_EXPORT_ENCODING = "utf-8"
+FEED_EXPORTERS = {
+    'csv': 'carscraper.exporters.HeadlessCsvItemExporter',
+}
 
-
-FEED_FORMAT="csv"
-FEED_URI="cars.csv"
+FEEDS = {
+    'cars.csv': {
+        'format': 'csv',
+        'item_export_kwargs': {
+           'include_headers_line': True,
+        },
+        'encoding': 'utf8'
+    }
+}
