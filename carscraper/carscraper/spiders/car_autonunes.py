@@ -26,16 +26,6 @@ class CarAutonunesSpider(scrapy.Spider):
         "https://grupoautonunes.com/estoque/?zero_km=0&txt_busca=&page=20",
         "https://grupoautonunes.com/estoque/?zero_km=0&txt_busca=&page=21"
         ]
-    
-    custom_settings = {
-        'cars.csv': {
-            'format': 'csv',
-            'item_export_kwargs': {
-                'include_headers_line': True,
-            },
-            'encoding': 'utf8'
-        }
-    }
 
     def parse(self, response):
         car_price = [extract_number(price) for price in response.css(".valor::text").re(r'\s*(\S.*\S)\s*')]
