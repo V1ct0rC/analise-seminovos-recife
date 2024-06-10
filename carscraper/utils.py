@@ -1,4 +1,5 @@
 import re
+from unidecode import unidecode
 
 def extract_number(price_text):
     """
@@ -30,13 +31,24 @@ def extract_engine_size(car_description):
     car_description (str): The car description string, e.g., "TRACKER LT 1.4 Turbo 16V Flex 4x".
     
     Returns:
-    str: The engine size, e.g., "1.4". Returns None if no match is found.
+    str: The engine size, e.g., "1.4 Turbo". Returns None if no match is found.
     """
-    # Define the regular expression pattern to match engine sizes like "1.0", "1.4", etc.
-    pattern = r'\b\d\.\d\b'
+
+    #Check if car is eletric
+    if "eletrico" in unidecode(car_description.lower()):
+        return "Elétrico"
+
+    # Define the regular expression pattern to match engine sizes like "1.0", "1.4", etc and check if there is tb (Turbo) in it.
+    pattern = r'\b\d\.\d tb\b|\b\d\.\d\b'
     
     # Search for the pattern in the car description
-    match = re.search(pattern, car_description)
+    match = re.search(pattern, car_description.lower())
+
+    #If "tb" in match, replace it with Turbo
+    result = match.group().replace("tb", "Turbo") if match else None
+
+    # Check if engine is turbo
+    is_turbo = " Turbo" if match and 'turbo' in car_description.lower() and "Turbo" not in result else ""
     
     # If a match is found, return the matched string; otherwise, return None
-    return match.group() if match else None
+    return result + is_turbo
