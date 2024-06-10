@@ -1,5 +1,5 @@
 import scrapy
-from utils import extract_number
+from utils import extract_number, extract_engine_size
 
 class CarItalianaSpider(scrapy.Spider):
     name = 'Italiana'
@@ -17,8 +17,8 @@ class CarItalianaSpider(scrapy.Spider):
         
         car_name_engine_desc_gearbox = response.css(".text-uppercase.font-weight-bold.font-size-14.text-center.mb-2::text").extract()
         car_name = [f'{car_brand[i]} {name_engine_desc_gearbox.split(" ")[0]}' for i, name_engine_desc_gearbox in enumerate(car_name_engine_desc_gearbox)]
-        car_engine = [name_engine_desc_gearbox.split(" ")[1] for name_engine_desc_gearbox in car_name_engine_desc_gearbox]
-        car_desc = [' '.join(name_engine_desc_gearbox.split(" ")[2:]) for name_engine_desc_gearbox in car_name_engine_desc_gearbox]
+        car_engine = [extract_engine_size(name_engine_desc_gearbox) for name_engine_desc_gearbox in car_name_engine_desc_gearbox]
+        car_desc = [name_engine_desc_gearbox for name_engine_desc_gearbox in car_name_engine_desc_gearbox]
         car_gearbox = ['Manual' if 'MANUAL' in name_engine_desc_gearbox else 'Automatico' for name_engine_desc_gearbox in car_name_engine_desc_gearbox]
         
         car_specs = response.css(".mb-0.font-size-12.text-muted::text").re(r'\s*(\S.*\S)\s*')
@@ -34,7 +34,8 @@ class CarItalianaSpider(scrapy.Spider):
         for row in row_data:
             scraped_info = {
                 "page": response.url,
-                "car_name": row[0],
+                "car_brand": row[0].partition(" ")[0].title(),
+                "car_name": row[0].partition(" ")[2].title(),
                 "car_price": row[1],
                 "car_km": row[4],
                 "car_year": row[3],

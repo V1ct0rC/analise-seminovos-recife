@@ -1,5 +1,5 @@
 import scrapy
-from utils import extract_number
+from utils import extract_number, extract_engine_size
 
 class CarAutonunesSpider(scrapy.Spider):
     name = 'Autonunes'
@@ -26,6 +26,16 @@ class CarAutonunesSpider(scrapy.Spider):
         "https://grupoautonunes.com/estoque/?zero_km=0&txt_busca=&page=20",
         "https://grupoautonunes.com/estoque/?zero_km=0&txt_busca=&page=21"
         ]
+    
+    custom_settings = {
+        'cars.csv': {
+            'format': 'csv',
+            'item_export_kwargs': {
+                'include_headers_line': True,
+            },
+            'encoding': 'utf8'
+        }
+    }
 
     def parse(self, response):
         car_price = [extract_number(price) for price in response.css(".valor::text").re(r'\s*(\S.*\S)\s*')]
@@ -33,8 +43,8 @@ class CarAutonunesSpider(scrapy.Spider):
         car_name = response.css("span.nome-do-carro strong::text").extract()
         
         car_engine_desc_gearbox = response.css(".versao.px-3.mt-3.mb-1::text").re(r'\s*(\S.*\S)\s*')
-        car_engine = [engine_desc[:3] if "ELÉTRICO" not in engine_desc else None for engine_desc in car_engine_desc_gearbox]
-        car_desc = [engine_desc[4:] if "ELÉTRICO" not in engine_desc else engine_desc for engine_desc in car_engine_desc_gearbox]
+        car_engine = [extract_engine_size(engine_desc) for engine_desc in car_engine_desc_gearbox]
+        car_desc = [engine_desc for engine_desc in car_engine_desc_gearbox]
         car_gearbox = ['Manual' if 'MANUAL' in engine_desc else 'Automatico' for engine_desc in car_engine_desc_gearbox]
         
         car_specs = response.css('.car-icon::text').re(r'\s*(\S.*\S)\s*')
@@ -53,7 +63,8 @@ class CarAutonunesSpider(scrapy.Spider):
         for row in row_data:
             scraped_info = {
                 "page": response.url,
-                "car_name": row[0],
+                "car_brand": row[0].partition(" ")[0].title(),
+                "car_name": row[0].partition(" ")[2].title(),
                 "car_price": row[1],
                 "car_km": row[4],
                 "car_year": row[3],

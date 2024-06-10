@@ -1,5 +1,5 @@
 import scrapy
-from utils import extract_number
+from utils import extract_number, extract_engine_size
 
 class CarPedragonSpider(scrapy.Spider):
     name = 'Pedragon'
@@ -16,19 +16,17 @@ class CarPedragonSpider(scrapy.Spider):
         car_desc_km = response.css(".inventory-subtitle::text").extract()
         car_km = [extract_number(desc_km.split('|')[1]) for desc_km in car_desc_km]
         car_desc = [desc_km.split('|')[0] for desc_km in car_desc_km]
+        car_engine = extract_engine_size(car_desc)
         
         car_specs = response.css(".inv-specs-value::text").extract()
         
         car_store = []
-        car_engine = []
         car_gearbox = []
         car_fuel = []
         car_color = []
         
-        for store, engine, gearbox, fuel, color in zip(car_specs[0::5], car_specs[1::5], car_specs[2::5], 
-                                                    car_specs[3::5], car_specs[4::5]):
+        for store, gearbox, fuel, color in zip(car_specs[0::5], car_specs[2::5], car_specs[3::5], car_specs[4::5]):
             car_store.append(store)
-            car_engine.append(engine)
             car_gearbox.append(gearbox)
             car_fuel.append(fuel)
             car_color.append(color)
@@ -38,7 +36,8 @@ class CarPedragonSpider(scrapy.Spider):
         for row in row_data:
             scraped_info = {
                 "page": response.url,
-                "car_name": row[0],
+                "car_brand": row[0].partition(" ")[0].title(),
+                "car_name": row[0].partition(" ")[2].title(),
                 "car_price": row[1],
                 "car_km": row[8],
                 "car_year": row[9],
