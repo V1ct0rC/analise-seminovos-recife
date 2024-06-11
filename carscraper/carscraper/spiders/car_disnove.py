@@ -7,7 +7,7 @@ class CarDisnoveSpider(scrapy.Spider):
         "https://www.disnove.com.br/seminovos/",
         "https://www.disnove.com.br/seminovos/9",
         "https://www.disnove.com.br/seminovos/18"
-        ]
+    ]
 
     def parse(self, response):            
         car_price = [extract_number(price) for price in response.css(".color-blue-light.font-weight-bold.font-24.text-center.mb-2::text").extract()]
@@ -29,7 +29,7 @@ class CarDisnoveSpider(scrapy.Spider):
         
         for year, fuel, km, color in zip(car_year_fuel_km_color[0::4], car_year_fuel_km_color[1::4], car_year_fuel_km_color[2::4], car_year_fuel_km_color[3::4]):
             car_year.append(year)
-            car_fuel.append(fuel)
+            car_fuel.append(fuel.title())
             car_km.append(extract_number(km))
             car_color.append(color)
             

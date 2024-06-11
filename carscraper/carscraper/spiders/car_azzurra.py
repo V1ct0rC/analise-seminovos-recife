@@ -19,7 +19,7 @@ class CarAzzurraSpider(scrapy.Spider):
         "https://azzurraseminovos.com.br/busca/pagina/180",
         "https://azzurraseminovos.com.br/busca/pagina/195",
         "https://azzurraseminovos.com.br/busca/pagina/210"
-        ]
+    ]
 
     def parse(self, response):
         car_price = [extract_number(price) for price in response.css('span.valor::text').extract()]
@@ -42,7 +42,8 @@ class CarAzzurraSpider(scrapy.Spider):
         for fuel, gearbox, color in zip(car_fuel_gearbox_color[0::3], car_fuel_gearbox_color[1::3], car_fuel_gearbox_color[2::3]):
             gearbox = 'Manual' if 'MANUAL' in gearbox else 'Automatico'
             fuel = "Flex" if "FLEX" in fuel else fuel
-            car_fuel.append(fuel)
+            fuel = "GNV" if "Gasolina, alcool e gas natural" in fuel else fuel
+            car_fuel.append(fuel.title())
             car_gearbox.append(gearbox)
             car_color.append(color.title())
             

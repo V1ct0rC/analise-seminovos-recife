@@ -25,7 +25,7 @@ class CarAutonunesSpider(scrapy.Spider):
         "https://grupoautonunes.com/estoque/?zero_km=0&txt_busca=&page=19",
         "https://grupoautonunes.com/estoque/?zero_km=0&txt_busca=&page=20",
         "https://grupoautonunes.com/estoque/?zero_km=0&txt_busca=&page=21"
-        ]
+    ]
 
     def parse(self, response):
         car_price = [extract_number(price) for price in response.css(".valor::text").re(r'\s*(\S.*\S)\s*')]
@@ -46,7 +46,7 @@ class CarAutonunesSpider(scrapy.Spider):
         for year, km, fuel in zip(car_specs[0::3], car_specs[1::3], car_specs[2::3]):
             car_year.append(year[5:])
             car_km.append(extract_number(km))
-            car_fuel.append(fuel)
+            car_fuel.append(fuel.title())
             
         row_data = zip(car_name, car_price, car_desc, car_year, car_km, car_fuel, car_engine, car_gearbox)
         

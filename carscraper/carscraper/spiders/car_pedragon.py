@@ -3,7 +3,9 @@ from utils import extract_number, extract_engine_size
 
 class CarPedragonSpider(scrapy.Spider):
     name = 'Pedragon'
-    start_urls = ["https://www.pedragonchevroletrecife.com.br/seminovos?condicao=seminovo"]
+    start_urls = [
+        "https://www.pedragonchevroletrecife.com.br/seminovos?condicao=seminovo"
+    ]
 
     def parse(self, response):    
 
@@ -16,7 +18,7 @@ class CarPedragonSpider(scrapy.Spider):
         car_desc_km = response.css(".inventory-subtitle::text").extract()
         car_km = [extract_number(desc_km.split('|')[1]) for desc_km in car_desc_km]
         car_desc = [desc_km.split('|')[0] for desc_km in car_desc_km]
-        car_engine = extract_engine_size(car_desc)
+        car_engine = [extract_engine_size(desc) for desc in car_desc]
         
         car_specs = response.css(".inv-specs-value::text").extract()
         
@@ -28,7 +30,7 @@ class CarPedragonSpider(scrapy.Spider):
         for store, gearbox, fuel, color in zip(car_specs[0::5], car_specs[2::5], car_specs[3::5], car_specs[4::5]):
             car_store.append(store)
             car_gearbox.append(gearbox)
-            car_fuel.append(fuel)
+            car_fuel.append(fuel.title())
             car_color.append(color)
             
         row_data = zip(car_name, car_price, car_desc, car_store, car_engine, car_gearbox, car_fuel, car_color, car_km, car_year)

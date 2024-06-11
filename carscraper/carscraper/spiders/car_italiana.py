@@ -8,7 +8,7 @@ class CarItalianaSpider(scrapy.Spider):
         "https://www.italianaseminovos.com.br/estoque?page=2",
         "https://www.italianaseminovos.com.br/estoque?page=3",
         "https://www.italianaseminovos.com.br/estoque?page=4"
-        ]
+    ]
 
     def parse(self, response):
         car_price = [extract_number(price) for price in response.css(".text-primary.font-weight-bold::text").extract()]
