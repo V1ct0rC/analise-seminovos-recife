@@ -64,7 +64,24 @@ O dataset é composto por 1124 amostras com 12 features cada:
 
 ## Pipeline do Projeto 2
 
+1. Escolher uma das colunas dos dados utilizados no projeto 1 para predição (classificação ou regressão).
+
+2. Separar os dados em treinamento, validação e teste.
+
+3. Selecionar 4 algoritmos de acordo com a tarefa escolhida no passo 1.
+
+4. Adicionar MLFlow no treinamento dos modelos para rastreamento.
+
+5. Executar uma ferramenta de seleção de hiper-parâmetros sobre o conjunto de validação.
+
+6. Realizar diagnóstico do melhor modelo geral da etapa 5 e melhorá-lo a partir do diagnóstico.
+
 **Video explicando a implementação**<br>
 https://drive.google.com/drive/folders/1eQBtHTzJ5Mjf3-6vFv9lFg_szz6_c5Se?usp=sharing
 
-As imagens [mlflow 1](MLFlow_image.png) e [mlflow 2](MLFlow_image2.png) mostram o rsultado do uso do MLFlow, caso não desejem rodar o código localmente.
+As imagens [mlflow 1](MLFlow_image.png), [mlflow 2](MLFlow_image2.png) e [mlflow 3](MLFlow_image3.png) mostram o rsultado do uso do MLFlow, caso não desejem rodar o código localmente.
+
+Para rodar o MLFlow, use o comando no terminal após a célula indicada no notebook:
+```
+mlflow ui 
+```
