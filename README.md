@@ -67,4 +67,4 @@ O dataset é composto por 1124 amostras com 12 features cada:
 **Video explicando a implementação**<br>
 https://drive.google.com/drive/folders/1eQBtHTzJ5Mjf3-6vFv9lFg_szz6_c5Se?usp=sharing
 
-As imagens MLFlow_image.png e MLFlow_image2.png mostram o rsultado do uso do MLFlow, caso não desejem rodar o código localmente.
+As imagens [mlflow 1](MLFlow_image.png) e [mlflow 2](MLFlow_image2.png) mostram o rsultado do uso do MLFlow, caso não desejem rodar o código localmente.
