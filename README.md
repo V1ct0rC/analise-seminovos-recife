@@ -48,7 +48,7 @@ O dataset é composto por 1124 amostras com 12 features cada:
 - **car_fuel**: Tipo de combustível.
 - **car_color**: Cor do automível.
 
-## Pipeline do Projeto
+## Pipeline do Projeto 1
 
 1. **Coleta de Dados**: Coleta de dados de carros seminovos em sites de vendas.
 
@@ -61,3 +61,8 @@ O dataset é composto por 1124 amostras com 12 features cada:
 3. **Estatísticas Descritivas com Visualizações**: Serão feitas juntamente com as outras etapas, para facilitar o entendimento dos dados.
 
 4. **Testes de Hipótese**: Ao final, serão feitos testes de hipótese para responder a algumas perguntas sobre o dataset.
+
+## Pipeline do Projeto 2
+
+**Video explicando a implementação**<br>
+https://drive.google.com/drive/folders/1eQBtHTzJ5Mjf3-6vFv9lFg_szz6_c5Se?usp=sharing
