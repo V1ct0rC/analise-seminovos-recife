@@ -1,5 +1,5 @@
-# Ciencia de Dados: Projeto 1
-Primeiro projeto da cadeira de Introdução à Ciência de Dados (Tópicos Avançados em Gerenciamento de Dados e Informação)
+# Análise Exploratória de Dados de Carros Seminovos em Recife
+Projeto da cadeira de Introdução à Ciência de Dados (Tópicos Avançados em Gerenciamento de Dados e Informação)
 
 <p align="justify">
 Nesse proejto iremos realizar uma análise de dad os sobre um dataset de carros seminovos da cidade de Recife - PE. O dataset foi montado a partir de dados coletados por webscraping de diversos sites de vendas. O dataset contém informações sobre o preço, ano, quilometragem, marca, modelo, tipo de combustível, tipo de câmbio e cor dos veículos. O objetivo desse projeto é realizar uma análise exploratória dos dados, respondendo a algumas perguntas sobre o dataset e gerando visualizações que possam ajudar a entender melhor o dataset.
